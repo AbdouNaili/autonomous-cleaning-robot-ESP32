@@ -1,0 +1,11 @@
+# Build output
+build/
+.pio/
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Never commit secrets or private data
+.env
