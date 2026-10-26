@@ -7,6 +7,7 @@ A small robot that covers a room by itself and avoids obstacles. It runs on an E
 - A **small obstacle** in front: the robot goes around it and comes back to its line.
 - A **wall** in front: the robot turns into the next line.
 - It builds a simple **grid map** of free and blocked cells and prints it in the Serial Monitor.
+<img width="657" height="606" alt="ROBOT" src="https://github.com/user-attachments/assets/d538efc7-05ff-47ac-9bf7-b44d23bf4728" />
 
 ---
 
@@ -18,13 +19,6 @@ cd autonomous-cleaning-robot
 ```
 
 Or click **Code → Download ZIP** on GitHub.
-
-```
-autonomous-cleaning-robot/
-├── firmware/cleaning_robot/cleaning_robot.ino
-└── README.md
-```
-
 ---
 
 ## 2. What you need
@@ -74,21 +68,9 @@ The HC-SR04 ECHO pin outputs 5 V, but the ESP32-S3 pins accept only 3.3 V. Put a
 - Remove the jumpers on ENA and ENB, otherwise the speed control does not work.
 - The battery goes to the L298N **12V** input. With the 5V jumper in place, the L298N **5V** pin can power the ESP32 (5V pin).
 
-Some ESP32-S3 boards (with "R8" in the name, like N16R8) use pins 35, 36 and 37 for their memory. On those boards, move IN3 and IN4 to free pins and change `RIGHT_IN3` and `RIGHT_IN4` in the code.
-
 ---
 
-## 4. Upload
-
-1. Open `firmware/cleaning_robot/cleaning_robot.ino` in the Arduino IDE.
-2. Choose **Tools → Board → ESP32S3 Dev Module** and your port.
-3. Upload, then open the Serial Monitor at **115200** baud.
-
-**Test it on a stand first, wheels off the floor.** If a wheel turns the wrong way, swap its two IN wires (or its two motor wires).
-
----
-
-## 5. Adjust for your robot
+## 4. Adjust for your robot
 
 The values at the top of the code depend on your motors, battery and floor:
 
@@ -118,50 +100,7 @@ Every cycle the robot:
 | `WALL_LIKE` | front and both sides blocked | Turn into the next line of the zigzag |
 | `UNKNOWN` | a sensor does not answer | Stop |
 
-3. Updates the map and prints it:
-
-```
-Grid (R=robot, #=occupied, .=free, ?=unknown):
-? ? ? ? ?
-? ? # ? ?
-. . . ? ?
-. ? . ? ?
-R ? . ? ?
-```
-
 Before each step forward the robot checks the front sensor again. If something appears during a manoeuvre, it stops and decides again.
-
-**Going around an obstacle** (example on the right):
-
-```
-turn right → 1 cell → turn left → 2 cells → turn left → 1 cell → turn right
-```
-
-The robot ends 2 cells ahead, on its original line, facing the same direction.
-
-**Zigzag:** going north, the robot turns into the line on its right. Going south, it turns left. The lines always move in the same direction across the room.
-
----
-
-## Limits
-
-- **The robot has no wheel encoders.** Its position is estimated from the time the motors run, so the map drifts. Battery level and floor type change the real distance and angle.
-- The map is small (5 × 5 cells, about 1 m × 1 m). Outside it, the robot keeps moving but the map is not updated.
-- Ultrasonic sensors can miss soft, thin or angled objects.
-- There is no cleaning motor in the code, only the navigation.
-
----
-
-## Troubleshooting
-
-| Problem | Fix |
-|---|---|
-| Always `UNKNOWN` | A sensor does not answer: check its wiring and 5 V supply |
-| Distances are always 0 or wrong | Check the ECHO voltage divider and the pin numbers |
-| The robot turns too much or too little | Change `TURN_MS` |
-| The robot does not move | Remove the ENA/ENB jumpers on the L298N and check the battery |
-| Compile error on `ledcAttachChannel` | Update the ESP32 boards package to version 3.x |
-
 ---
 
 © 2026. All rights reserved. You may read the code, but do not copy or reuse it without permission.
